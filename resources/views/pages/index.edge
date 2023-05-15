@@ -1,0 +1,47 @@
+@layout('layouts/main')
+@set('title', 'Home')
+
+@section('body')
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Title
+                </th>
+                <th scope="col" class="px-6 py-3 flex flex-col text-center items-center">
+                    Description
+                </th>
+                <th scope="col" class="px-6 py-3">
+                </th>
+                <th scope="col" class="px-6 py-3">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @each(todo in todos)
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <a href="{{route(todo.show), [todo.id]}}">{{todo.title}}</a>
+                </th>
+                <td class="px-6 py-4">
+                    {{todo.description}}
+                </td>
+                <td class="px-6 py-4">
+                    <a href="{{route('todo.edit', [todo.id])}}"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                </td>
+                <td class="px-6 py-4">
+                    <form action="{{route('todo.delete', [todo.id])}}?_method=DELETE" method="POST">
+                        <a href="{{route('todo.delete', [todo.id])}}"
+                        class="font-medium text-red-600 dark:text-red-500 hover:underline"><button type="submit">Delete</button></a>
+                    </form>
+                </td>
+            </tr>
+            @end
+        </tbody>
+    </table>
+</div>
+
+@end

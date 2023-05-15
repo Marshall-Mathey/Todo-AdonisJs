@@ -20,6 +20,14 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async ({ view }) => {
-  return view.render('welcome')
-})
+Route.get('/', 'TodosController.index').as('home')
+
+Route.get('/create', 'TodosController.create').as('todo.create')
+Route.post('/create', 'TodosController.store')
+
+Route.get('/:id', 'TodosController.show').as('todo.show')
+
+Route.get('/:id/edit', 'TodosController.edit').as('todo.edit')
+Route.patch('/:id', 'TodosController.update').as('todo.update')
+
+Route.delete('/:id', 'TodosController.destroy').as('todo.delete')
