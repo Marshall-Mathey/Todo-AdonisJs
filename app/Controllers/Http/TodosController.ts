@@ -2,7 +2,6 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Todo from "App/Models/Todo";
 import TodoValidator from "App/Validators/TodoValidator";
 
-
 export default class TodosController {
   public async index({ view }: HttpContextContract) {
     const todos = await Todo.all();
@@ -19,31 +18,39 @@ export default class TodosController {
       const data = await request.validate(TodoValidator);
 
       await todo.merge({ ...data }).save();
-      session.flash({success: 'Todo added successfully'})
+      session.flash({ success: "Todo added successfully" });
       return response.redirect().toRoute("home");
     } catch (error) {
-      throw error
-      return response.redirect().back()
+      throw error;
+      return response.redirect().back();
     }
   }
 
-  /*public async show({ params, view }: HttpContextContract) {
+  public async show({ params, view }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
     return view.render("Todo/show", { todo });
-  }*/
+  }
 
   public async edit({ params, view }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
     return view.render("Todo/edit", { todo });
   }
 
-  public async update({ request, response, params, session }: HttpContextContract) {
+  public async update({
+    request,
+    response,
+    params,
+    session,
+  }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
-    const data = request.body();
+    todo.is_completed = !!request.input("completed");
+    await todo.save();
+
+    //const data = request.body();
 
     // return data
-    await todo.merge({ ...data }).save();
-    session.flash({success: 'Todo edited successfully'})
+    //await todo.merge({ ...data }).save();
+    session.flash({ success: "Todo updated successfully" });
     return response.redirect().toRoute("home");
   }
 
@@ -51,9 +58,9 @@ export default class TodosController {
     try {
       const todo = await Todo.findOrFail(params.id);
       await todo.delete();
-      return response.redirect().toRoute('home')
+      return response.redirect().toRoute("home");
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }
