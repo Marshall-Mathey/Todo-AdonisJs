@@ -4,6 +4,9 @@
 @section('body')
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  @if(auth.isLoggedIn)
+  {{ auth.user.username }}
+  @endif
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -34,8 +37,7 @@
                 </td>
                 <td class="px-6 py-4">
                     <form action="{{route('todo.delete', [todo.id])}}?_method=DELETE" method="POST">
-                        <a href="{{route('todo.delete', [todo.id])}}"
-                        class="font-medium text-red-600 dark:text-red-500 hover:underline"><button type="submit">Delete</button></a>
+                        <a href="{{route('todo.delete', [todo.id])}}""><button class="font-medium text-red-600 dark:text-red-500 hover:underline type="submit">Delete</button></a>
                     </form>
                 </td>
             </tr>

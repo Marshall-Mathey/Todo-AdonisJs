@@ -19,15 +19,32 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+/**
+ * Auth routes
+ */
+Route.get('/login', 'AuthController.loginForm').as('loginForm')
+Route.post('/login', 'AuthController.login').as('login')
 
-Route.get('/', 'TodosController.index').as('home')
+Route.get('/register', 'AuthController.registerForm').as('registerForm')
+Route.post('/register', 'AuthController.register').as('register')
 
-Route.get('/create', 'TodosController.create').as('todo.create')
-Route.post('/create', 'TodosController.store')
+Route.delete('/logout', 'AuthController.logout').as('logout')
 
-Route.get('/:id', 'TodosController.show').as('todo.show')
+/**
+ **
+ * Todo
+ ** 
+ */
+Route.group(() => {
+    Route.get('/', 'TodosController.index').as('home')
 
-Route.get('/:id/edit', 'TodosController.edit').as('todo.edit')
-Route.patch('/:id', 'TodosController.update').as('todo.update')
-
-Route.delete('/:id', 'TodosController.destroy').as('todo.delete')
+    Route.get('/create', 'TodosController.create').as('todo.create')
+    Route.post('/create', 'TodosController.store')
+    
+    Route.get('/:id', 'TodosController.show').as('todo.show')
+    
+    Route.get('/:id/edit', 'TodosController.edit').as('todo.edit')
+    Route.patch('/:id', 'TodosController.update').as('todo.update')
+    
+    Route.delete('/:id', 'TodosController.destroy').as('todo.delete')
+}).middleware(['auth'])

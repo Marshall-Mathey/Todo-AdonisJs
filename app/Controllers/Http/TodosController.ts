@@ -1,41 +1,49 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Todo from "App/Models/Todo";
+import TodoValidator from "App/Validators/TodoValidator";
+
 
 export default class TodosController {
   public async index({ view }: HttpContextContract) {
     const todos = await Todo.all();
-    return view.render("pages/index", { todos });
+    return view.render("Todo/index", { todos });
   }
 
   public async create({ view }: HttpContextContract) {
-    return view.render("pages/create");
+    return view.render("Todo/create");
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    const todo = new Todo();
-    const data = request.body();
+  public async store({ request, response, session }: HttpContextContract) {
+    try {
+      const todo = new Todo();
+      const data = await request.validate(TodoValidator);
 
-    // return data
-    await todo.merge({ ...data }).save();
-    return response.redirect().toRoute("home");
+      await todo.merge({ ...data }).save();
+      session.flash({success: 'Todo added successfully'})
+      return response.redirect().toRoute("home");
+    } catch (error) {
+      throw error
+      return response.redirect().back()
+    }
   }
 
-  public async show({ params, view }: HttpContextContract) {
+  /*public async show({ params, view }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
-    return view.render("pages/show", { todo });
-  }
+    return view.render("Todo/show", { todo });
+  }*/
 
   public async edit({ params, view }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
-    return view.render("pages/edit", { todo });
+    return view.render("Todo/edit", { todo });
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, session }: HttpContextContract) {
     const todo = await Todo.findOrFail(params.id);
     const data = request.body();
 
     // return data
     await todo.merge({ ...data }).save();
+    session.flash({success: 'Todo edited successfully'})
     return response.redirect().toRoute("home");
   }
 
@@ -45,7 +53,7 @@ export default class TodosController {
       await todo.delete();
       return response.redirect().toRoute('home')
     } catch (error) {
-      return error
+      throw error
     }
   }
 }
