@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.integer('user_id').unsigned()
       table.string('title').notNullable()
       table.text('description').notNullable()
       table.boolean('is_completed').defaultTo(0)

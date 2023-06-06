@@ -3,8 +3,10 @@ import Todo from "App/Models/Todo";
 import TodoValidator from "App/Validators/TodoValidator";
 
 export default class TodosController {
-  public async index({ view }: HttpContextContract) {
-    const todos = await Todo.all();
+  public async index({ view, auth }: HttpContextContract) {
+    const user = auth.user;
+    await user?.load("todos");
+    const todos = user?.todos;
     return view.render("Todo/index", { todos });
   }
 
@@ -12,12 +14,21 @@ export default class TodosController {
     return view.render("Todo/create");
   }
 
-  public async store({ request, response, session }: HttpContextContract) {
+  public async store({
+    request,
+    response,
+    session,
+    auth,
+  }: HttpContextContract) {
     try {
-      const todo = new Todo();
+      //const todo = new Todo();
       const data = await request.validate(TodoValidator);
 
-      await todo.merge({ ...data }).save();
+      await auth.user?.related("todos").create({
+        title: data.title,
+        description: data.description,
+      });
+      //await todo.merge({ ...data }).save();
       session.flash({ success: "Todo added successfully" });
       return response.redirect().toRoute("home");
     } catch (error) {

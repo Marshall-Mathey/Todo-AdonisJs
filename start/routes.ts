@@ -22,18 +22,16 @@ import Route from '@ioc:Adonis/Core/Route'
 /**
  * Auth routes
  */
-Route.get('/login', 'AuthController.loginForm').as('loginForm')
+Route.get('/login', 'AuthController.loginForm').as('loginForm').middleware(['guest'])
 Route.post('/login', 'AuthController.login').as('login')
 
-Route.get('/register', 'AuthController.registerForm').as('registerForm')
+Route.get('/register', 'AuthController.registerForm').as('registerForm').middleware(['guest'])
 Route.post('/register', 'AuthController.register').as('register')
 
 Route.delete('/logout', 'AuthController.logout').as('logout')
 
 /**
- **
  * Todo
- ** 
  */
 Route.group(() => {
     Route.get('/', 'TodosController.index').as('home')
